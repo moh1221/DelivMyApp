@@ -23,6 +23,20 @@ Is peer to peer delivery application, allow users to place orders from any categ
   
 ![Alt text](/Document/Search_request.PNG)
 
+**Accept Delivery [Accept Deliv Button]**
+  - Alert message will popup for confirm the request.
+  
+  ![Alt text](/Document/AcceptDeliv.png)
+
+  - Once user confirm - Success information message will apper with request # and deliver time.
+  - To view/follow up with deliver request, go to MyDeliv Tab
+  
+  ![Alt text](/Document/AcceptConfirmation.png)
+
+  - New request will apper on MyDeliv list.
+  
+  ![Alt text](/Document/MyDelivList.png)
+
 > **My Request list**
   - My request tab show all requests you placed.
   - Table view show summary info for requests (Place name, deliver time, deliver fee, category and deliver status)
