@@ -13,7 +13,7 @@ extension DelivMyClient{
     struct Constants {
         
         // URLs
-//        static let DelivMyBaseURL = "http://localhost:3000/"
+        
         static let DelivMyBaseURL = "https://delivmy.com/"
         
     }
