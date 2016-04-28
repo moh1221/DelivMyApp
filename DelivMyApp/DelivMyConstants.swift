@@ -15,6 +15,7 @@ extension DelivMyClient{
         // URLs
         
         static let DelivMyBaseURL = "https://delivmy.com/"
+        static let signupURL = "https://delivmy.com/signup"
         
     }
     

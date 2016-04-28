@@ -66,6 +66,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NSFetchedResul
         
     }()
     
+  
+    @IBAction func signUpBtn(sender: AnyObject) {
+        let url = NSURL(string : DelivMyClient.Constants.signupURL)
+        UIApplication.sharedApplication().openURL(url!)
+    }
+    
+    
     @IBAction func loginToDelivMy(sender: UIButton) {
         
         if emailTextField.text!.isEmpty {

@@ -60,6 +60,9 @@
                                 <state key="normal" title="Don't have an account? Sign Up">
                                     <color key="titleColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="signUpBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QJu-Wu-FUa"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DelivMy" translatesAutoresizingMaskIntoConstraints="NO" id="OCy-Bf-OW6">
                                 <rect key="frame" x="205" y="53" width="191" height="92"/>
