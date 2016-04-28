@@ -112,6 +112,10 @@ class SearchInfoViewController: UITableViewController, NSFetchedResultsControlle
     
     func submitRequest(alert: UIAlertAction!) -> Void {
         
+        // enable newtwork indicator
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let body = [
             DelivMyClient.ParameterKeys.RequestID :  searchInfo.id
         ]
@@ -121,8 +125,17 @@ class SearchInfoViewController: UITableViewController, NSFetchedResultsControlle
         DelivMyClient.sharedInstance().postRequest(body, paramKey: method) { (success, result, error) in
             if success {
                 
+                // Remove accepted request from search list
+                
                 self.removeRequests()
-                self.dismissViewControllerAnimated(true, completion: nil)
+                
+                // return to search list
+                
+                self.deliverAccAlert()
+                
+                // disable newtwork indicator
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
             } else {
                 dispatch_async(dispatch_get_main_queue(), {
@@ -139,6 +152,15 @@ class SearchInfoViewController: UITableViewController, NSFetchedResultsControlle
         let alert = UIAlertController(title: "", message: msg, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default, handler: submitRequest))
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true,completion:nil)
+    }
+    
+    func deliverAccAlert(){
+        let msg = "This request #\(self.title!) assigned to you, for more details please check 'MyDeliv' Tab! deliver time \(self.DeliveryAtLabel.text!)"
+        let alert = UIAlertController(title: "", message: msg, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { alert -> Void in
+           self.dismissViewControllerAnimated(true, completion: nil)
+    }))
         self.presentViewController(alert, animated: true,completion:nil)
     }
     

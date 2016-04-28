@@ -19,6 +19,7 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
     @IBOutlet weak var searchCount: UILabel!
     @IBOutlet weak var freshSwitch: UISwitch!
     
+    
     var logoutBtn = UIBarButtonItem()
     var delivBtn = UIBarButtonItem()
     var shared = SharedView.sharedInstance()
@@ -163,6 +164,10 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
     
     func loadDeliverList(locationCoor: [String : AnyObject]){
         
+        // Enable newtwork indicator
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let parameters: [String : AnyObject] = locationCoor
         let method = DelivMyClient.Methods.Search
         
@@ -196,6 +201,10 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
                             }
                         }
                         CoreDataStackManager.sharedInstance().saveContext()
+                        
+                        // disable newtwork indicator
+                        
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                 } else {
                     
@@ -259,9 +268,28 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
         self.parentViewController!.navigationItem.hidesBackButton = true
     }
     
+    func indicatorUpdate(cell: SearchCellView, value: Bool) -> Void{
+        if value {
+//            let space: CGFloat = 3.0
+//            let dimi: CGFloat = (view.frame.size.width - ( space * 2 )) / 3.0
+//            cell.searchIndicator.center = CGPointMake(dimi/2, dimi/2)
+            cell.searchIndicator.alpha = 1
+            cell.searchIndicator.startAnimating()
+            
+            
+        } else {
+            cell.searchIndicator.stopAnimating()
+            cell.searchIndicator.alpha = 0
+        }
+    }
+    
     // Configure Cell
     
     func configureCell(cell: SearchCellView, request: Request) {
+        
+        // Start Indicator
+        
+        indicatorUpdate(cell, value: true)
         
         // Update label text 
         
@@ -313,6 +341,9 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
                 
                cell.taskToCancelifCellIsReused = task
             }
+            // End Indicator
+            
+            indicatorUpdate(cell, value: false)
         }
     }
 }

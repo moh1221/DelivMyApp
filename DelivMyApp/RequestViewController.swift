@@ -62,6 +62,10 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
     
     func loadRequestList(){
         
+        // Network indicator enable
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let parameters:[String:AnyObject] = [String:AnyObject]()
         let method = DelivMyClient.Methods.Requests
         
@@ -90,6 +94,10 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
                     
                         CoreDataStackManager.sharedInstance().saveContext()
                         self.tableView.reloadData()
+                        
+                        // disable newtwork indicator
+                        
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                 } else {
                     

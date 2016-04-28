@@ -62,6 +62,10 @@ class DelivViewController: UITableViewController, NSFetchedResultsControllerDele
     
     func loadDeliverList(){
         
+        // Enable newtwork indicator
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let parameters:[String:AnyObject] = [String:AnyObject]()
         let method = DelivMyClient.Methods.Delivers
         DelivMyClient.sharedInstance().taskForGETMethod(method, parameters: parameters){ JSONResult, error  in
@@ -89,6 +93,10 @@ class DelivViewController: UITableViewController, NSFetchedResultsControllerDele
                         
                         CoreDataStackManager.sharedInstance().saveContext()
                         self.tableView.reloadData()
+                        
+                        // disable newtwork indicator
+                        
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                     
                 } else {

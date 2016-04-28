@@ -18,6 +18,7 @@ class SearchCellView: UICollectionViewCell {
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var distance: UILabel!
+    @IBOutlet weak var searchIndicator: UIActivityIndicatorView!
     
     var taskToCancelifCellIsReused: NSURLSessionTask? {
         

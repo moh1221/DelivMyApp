@@ -110,7 +110,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NSFetchedResul
                         }
                     })
                 }
-                self.actIndicator.showIndicator(false)
+                
             }
         }
 
@@ -131,6 +131,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NSFetchedResul
         dispatch_async(dispatch_get_main_queue(), {
             let controller = self.storyboard!.instantiateViewControllerWithIdentifier("ManagerNavigationController") as! UINavigationController
             self.presentViewController(controller, animated: true, completion: nil)
+            
+            self.actIndicator.showIndicator(false)
         })
     }
 }

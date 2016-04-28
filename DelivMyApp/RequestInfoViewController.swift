@@ -17,6 +17,7 @@ class RequestInfoViewController: UITableViewController, NSFetchedResultsControll
     var shared = SharedView()
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var locIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var placeNameLabel: UILabel!
     @IBOutlet weak var categoryLabel: UILabel!
@@ -37,7 +38,10 @@ class RequestInfoViewController: UITableViewController, NSFetchedResultsControll
         
         super.viewWillAppear(animated)
         
+        self.locIndicator.alpha = 0
+        
         loadLabels()
+        
     }
     
     // Core Data Convenience
@@ -68,6 +72,11 @@ class RequestInfoViewController: UITableViewController, NSFetchedResultsControll
     // load location info for Request
     
     func loadLocationInfo(){
+        
+        // Enable Indicator
+        
+        self.locIndicator.showIndicator(true)
+        
         let parameters = [ "id": requestInfo.id]
         let method = DelivMyClient.Methods.RequestsLocations
         DelivMyClient.sharedInstance().taskForGETMethod(method, parameters: parameters){ JSONResult, error  in
@@ -87,10 +96,16 @@ class RequestInfoViewController: UITableViewController, NSFetchedResultsControll
                     
                         self.addressLabel.text = self.requestInfo.location?.address
                         self.setMap(self.requestInfo.location!)
+                        // diable Indicator
+                        
+                        self.locIndicator.showIndicator(false)
                     }
                 } else {
                     let error = NSError(domain: "Cant find request in \(JSONResult)", code: 0, userInfo: nil)
                     print(error)
+                    // disable Indicator
+                    
+                    self.locIndicator.showIndicator(false)
                 }
             }
         }
