@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 7.0">
+    <entity name="Deliver" representedClassName=".Deliver" syncable="YES">
+        <attribute name="completed_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="receipt_img" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="user_id" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="profile" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Profile" inverseName="deliver" inverseEntity="Profile" syncable="YES"/>
+        <relationship name="request" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Request" inverseName="deliver" inverseEntity="Request" syncable="YES"/>
+    </entity>
+    <entity name="Item" representedClassName=".Item" syncable="YES">
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="itemdescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemname" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="request" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Request" inverseName="items" inverseEntity="Request" syncable="YES"/>
+    </entity>
+    <entity name="Location" representedClassName=".Location" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="long" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="request" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Request" inverseName="location" inverseEntity="Request" syncable="YES"/>
+    </entity>
+    <entity name="Profile" representedClassName=".Profile" syncable="YES">
+        <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="last_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="picture" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="deliver" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Deliver" inverseName="profile" inverseEntity="Deliver" syncable="YES"/>
+        <relationship name="request" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Request" inverseName="profile" inverseEntity="Request" syncable="YES"/>
+    </entity>
+    <entity name="Request" representedClassName=".Request" syncable="YES">
+        <attribute name="category_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="category_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="cost" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="delivery_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fees" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="items_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="placename" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="user_id" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="deliver" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Deliver" inverseName="request" inverseEntity="Deliver" syncable="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Item" inverseName="request" inverseEntity="Item" syncable="YES"/>
+        <relationship name="location" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="request" inverseEntity="Location" syncable="YES"/>
+        <relationship name="profile" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Profile" inverseName="request" inverseEntity="Profile" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Deliver" positionX="-36" positionY="99" width="128" height="180"/>
+        <element name="Item" positionX="-36" positionY="81" width="128" height="120"/>
+        <element name="Location" positionX="-18" positionY="108" width="128" height="120"/>
+        <element name="Profile" positionX="-27" positionY="117" width="128" height="120"/>
+        <element name="Request" positionX="-54" positionY="-9" width="128" height="270"/>
+    </elements>
+</model>
