@@ -49,6 +49,11 @@ Is peer to peer delivery application, allow users to place orders from any categ
   
 ![Alt text](/Document/Requests.PNG)
 
+Delete Request
+ - Users allowed to delete requests with **Open** status only.
+ 
+ ![Alt text](/Document/DeleteRequest.png)
+
 
 Request status are:
 ```
@@ -66,6 +71,7 @@ Request status are:
   - Item list: show items count, select to view items details
   - Requester Info: show profile of requester user.
   - Receipt: Allow user to post receipt “Not available on App”. 
+  - User Can't **Delete** Delivery Request.
   - submit deliver “Not Available"
   - deliver API using method `“/delivers/:id”` and :id is selected `deliver_id`
   
