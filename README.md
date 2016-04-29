@@ -1,4 +1,5 @@
 # DelivMyApp [https://delivmy.com]
+iOS Swift 2.0 App
 
 
 Is peer to peer delivery application, allow users to place orders from any categories like restaurant, grocery,  dry clearners and others, and add delivery fees, other users can search the map for local orders and deliver it. 
