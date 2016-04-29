@@ -72,6 +72,10 @@ class DelivViewController: UITableViewController, NSFetchedResultsControllerDele
             if let error = error {
                 
                 self.shared.AlertMessage(error.localizedDescription, viewControl: self)
+                
+                // disable newtwork indicator
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             
             } else {
                 
@@ -102,6 +106,10 @@ class DelivViewController: UITableViewController, NSFetchedResultsControllerDele
                 } else {
                     
                     self.shared.AlertMessage("Cant find deliver in \(JSONResult)", viewControl: self)
+                    
+                    // disable newtwork indicator
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }
             }
         }
@@ -268,19 +276,4 @@ extension DelivViewController {
         
         self.navigationController!.pushViewController(controller, animated: true)
     }
-    
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        switch (editingStyle) {
-        case .Delete:
-            
-            // Here we get the actor, then delete it from core data
-            let deliver = fetchedResultsController.objectAtIndexPath(indexPath) as! Deliver
-            sharedContext.deleteObject(deliver)
-            CoreDataStackManager.sharedInstance().saveContext()
-            
-        default:
-            break
-        }
-    }
-
 }

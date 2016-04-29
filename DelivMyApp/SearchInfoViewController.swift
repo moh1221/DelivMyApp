@@ -141,6 +141,9 @@ class SearchInfoViewController: UITableViewController, NSFetchedResultsControlle
                 dispatch_async(dispatch_get_main_queue(), {
                     if let error: String = error!.localizedDescription {
                         self.shared.AlertMessage(error, viewControl: self)
+                        // disable newtwork indicator
+                        
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                 })
             }

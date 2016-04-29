@@ -195,14 +195,14 @@
 		E93AB2511C9CD1B50002CCC8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E93AB2591C9D31400002CCC8 /* DelivMy */,
+				E9800F151CD07C2D00F87A69 /* Calc */,
 				E9812A441CA1F5CF00D9BD8A /* Profile.swift */,
 				E9812A461CA1F5EC00D9BD8A /* Location.swift */,
 				E9812A481CA1F5FB00D9BD8A /* Item.swift */,
 				E9812A4C1CA1F66100D9BD8A /* Status.swift */,
 				E9812A4E1CA1F69300D9BD8A /* Deliver.swift */,
 				E9812A971CA39DFD00D9BD8A /* Request.swift */,
-				E9800F151CD07C2D00F87A69 /* Calc */,
-				E93AB2591C9D31400002CCC8 /* DelivMy */,
 			);
 			name = Model;
 			sourceTree = "<group>";

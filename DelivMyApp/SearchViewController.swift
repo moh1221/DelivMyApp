@@ -91,6 +91,15 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
         
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        timer.invalidate()
+        
+        print("timer Stopped")
+        
+    }
+    
     // Core Data Convenience
     
     var sharedContext: NSManagedObjectContext {
@@ -176,6 +185,10 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
                 
                 self.shared.AlertMessage(error.localizedDescription, viewControl: self)
                 
+                // disable newtwork indicator
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
             } else {
                 
                 self.updateSearchCounter(JSONResult.count)
@@ -209,6 +222,10 @@ class SearchViewController: UIViewController, NSFetchedResultsControllerDelegate
                 } else {
                     
                     self.shared.AlertMessage("Cant find deliver in \(JSONResult)", viewControl: self)
+                    
+                    // disable newtwork indicator
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                 }
             }

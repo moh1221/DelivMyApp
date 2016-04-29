@@ -107,6 +107,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, NSFetchedResul
                     dispatch_async(dispatch_get_main_queue(), {
                         if let error: String = errorString!.localizedDescription {
                             self.shared.AlertMessage(error, viewControl: self)
+                            self.actIndicator.showIndicator(false)
                         }
                     })
                 }

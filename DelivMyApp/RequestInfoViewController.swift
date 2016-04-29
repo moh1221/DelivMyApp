@@ -84,6 +84,10 @@ class RequestInfoViewController: UITableViewController, NSFetchedResultsControll
                 
                 self.shared.AlertMessage(error.localizedDescription, viewControl: self)
                 
+                // disable Indicator
+                
+                self.locIndicator.showIndicator(false)
+                
             } else {
                 
                 if let locationDictionaries = JSONResult as? [String : AnyObject] {

@@ -32,6 +32,7 @@ extension DelivMyClient{
         static let Requests = "requests"
         static let RequestsItems = "requests/:id/items"
         static let RequestsLocations = "requests/:id/locations"
+        static let RequestDelete = "requests/:id"
         
         
         // Search

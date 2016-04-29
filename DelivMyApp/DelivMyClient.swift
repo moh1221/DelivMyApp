@@ -124,23 +124,39 @@ class DelivMyClient: NSObject {
     }
     
     // Delete
-    func taskForDELETEMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func taskForDELETEMethod(method: String, parameters: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
+        
+        var mutableParameters = parameters
+        var mutableResource = method
+        // Substitute the id parameter into the resource
+        if method.rangeOfString(":id") != nil {
+            
+            mutableResource = mutableResource.stringByReplacingOccurrencesOfString(":id", withString: "\(parameters[ParameterKeys.ID]!)")
+            
+            mutableParameters.removeValueForKey(ParameterKeys.ID)
+        }
         
         /* Build the URL and configure the request */
-        let urlString = DelivMyClient.Constants.DelivMyBaseURL + method
+        let urlString = DelivMyClient.Constants.DelivMyBaseURL + mutableResource + DelivMyClient.escapedParameters(mutableParameters)
+        
+        /* Build the URL and configure the request */
+//        let urlString = DelivMyClient.Constants.DelivMyBaseURL + method
         
         let url = NSURL(string: urlString)!
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "DELETE"
-        var xsrfCookie: NSHTTPCookie? = nil
-        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie] {
-            if cookie.name == "auth_token" { xsrfCookie = cookie }
-            sharedCookieStorage.deleteCookie(cookie)
+        if method == "logout" {
+            var xsrfCookie: NSHTTPCookie? = nil
+            let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+            for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie] {
+                if cookie.name == "auth_token" { xsrfCookie = cookie }
+                sharedCookieStorage.deleteCookie(cookie)
+            }
+            if let xsrfCookie = xsrfCookie {
+                request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-auth_token")
+            }
         }
-        if let xsrfCookie = xsrfCookie {
-            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-auth_token")
-        }
+        
         /* Make the request */
         let task = session.dataTaskWithRequest(request) {data, response, error in
             if error != nil {

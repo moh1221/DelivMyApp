@@ -85,7 +85,9 @@ extension DelivMyClient{
     
     func logoutDelivMy(completionHandler: (success: Bool, errorString: NSError?) -> Void) {
         
-        taskForDELETEMethod(Methods.LogOut){ JSONResult, error in
+        let parameters: [String : AnyObject] = [String : AnyObject]()
+        
+        taskForDELETEMethod(Methods.LogOut, parameters: parameters){ JSONResult, error in
             if let error = error {
                 completionHandler(success: false, errorString: error)
                 

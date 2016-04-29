@@ -28,7 +28,7 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
         // Set the delegate to this view controller
         fetchedResultsController.delegate = self
         
-        self.refreshControl?.addTarget(self, action: #selector(RequestViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(RequestViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -56,8 +56,8 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
         
         loadRequestList()
         
-        self.tableView.reloadData()
-        self.refreshControl?.endRefreshing()
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
     }
     
     func loadRequestList(){
@@ -73,6 +73,10 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
             if let error = error {
                 
                 self.shared.AlertMessage(error.localizedDescription, viewControl: self)
+                
+                // disable newtwork indicator
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
             } else {
                 
@@ -102,7 +106,40 @@ class RequestViewController: UITableViewController, NSFetchedResultsControllerDe
                 } else {
                     
                     self.shared.AlertMessage("Cant find request in \(JSONResult)", viewControl: self)
+                    
+                    // disable newtwork indicator
+                    
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }
+            }
+        }
+    }
+    
+    // Delete Request
+    
+    func deleteRequest( request: Request) -> Void {
+        
+        // Network indicator enable
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let parameters:[String:AnyObject] = [ DelivMyClient.ParameterKeys.ID : request.id ]
+        let method = DelivMyClient.Methods.RequestDelete
+
+        
+        DelivMyClient.sharedInstance().taskForDELETEMethod(method, parameters: parameters){ JSONResult, error  in
+            if let error = error {
+                
+                self.shared.AlertMessage(error.localizedDescription, viewControl: self)
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+            } else {
+                
+                // disable newtwork indicator
+                    
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
             }
         }
     }
@@ -240,8 +277,19 @@ extension RequestViewController {
             
             // Here we get the actor, then delete it from core data
             let request = fetchedResultsController.objectAtIndexPath(indexPath) as! Request
-            sharedContext.deleteObject(request)
-            CoreDataStackManager.sharedInstance().saveContext()
+            if request.status_id == 1 {
+                
+                deleteRequest(request)
+                
+                sharedContext.deleteObject(request)
+                CoreDataStackManager.sharedInstance().saveContext()
+            } else {
+                
+                let message = "Request can't be removerd Status: On Progress"
+                
+                shared.AlertMessage(message, viewControl: self)
+            }
+            
             
         default:
             break
