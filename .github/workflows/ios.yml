@@ -1,0 +1,48 @@
+name: Swift and iOS
+
+on:
+  pull_request:
+  push:
+    branches: [master, "modernize/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-smoke:
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: Test the shared API client
+        run: swift test
+      - name: Build the iOS app
+        run: |
+          xcodebuild -project DelivMyApp.xcodeproj -scheme DelivMyApp -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/DelivMyBuild" \
+            CODE_SIGNING_ALLOWED=NO build
+      - name: Launch on an iPhone simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime=com.apple.CoreSimulator.SimRuntime.iOS-27-2
+          device=com.apple.CoreSimulator.SimDeviceType.iPhone-17e
+          udid="$(xcrun simctl create DelivMyCI "$device" "$runtime")"
+          trap 'xcrun simctl shutdown "$udid" || true; xcrun simctl delete "$udid" || true' EXIT
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl install "$udid" "$RUNNER_TEMP/DelivMyBuild/Build/Products/Debug-iphonesimulator/DelivMyApp.app"
+          # The login screen must open without contacting a production server.
+          export SIMCTL_CHILD_DELIVMY_API_BASE_URL=http://localhost:3000
+          pid="$(xcrun simctl launch "$udid" com.DelivMyApp | awk '/com\.DelivMyApp: / { print $2 }')"
+          [[ "$pid" =~ ^[0-9]+$ ]]
+          sleep 5
+          kill -0 "$pid"

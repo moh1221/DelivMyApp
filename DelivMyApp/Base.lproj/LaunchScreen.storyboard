@@ -17,17 +17,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DelivMy" translatesAutoresizingMaskIntoConstraints="NO" id="xfW-KL-crH">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DelivMy" translatesAutoresizingMaskIntoConstraints="NO" id="xfW-KL-crH">
                                 <rect key="frame" x="180" y="236" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="upW-qf-Udg"/>
+                                    <constraint firstAttribute="height" constant="112" id="HTf-gW-AhD"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.67843137249999996" green="0.14117647059999999" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="xfW-KL-crH" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="FlZ-AH-rSR"/>
-                            <constraint firstItem="xfW-KL-crH" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="216" id="G3l-Im-hHn"/>
                             <constraint firstItem="xfW-KL-crH" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="ZZM-qG-wWp"/>
                         </constraints>
                     </view>
