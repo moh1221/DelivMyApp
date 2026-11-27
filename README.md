@@ -1,79 +1,62 @@
-# DelivMyApp [https://delivmy.com]
-iOS Swift 2.0 App
+# DelivMyApp
 
+DelivMy connects people placing local delivery requests with nearby couriers. The iOS app supports:
 
-Is peer to peer delivery application, allow users to place orders from any categories like restaurant, grocery,  dry clearners and others, and add delivery fees, other users can search the map for local orders and deliver it. 
+- Signing in and opening the signup page.
+- Searching the map for available requests, displaying nearby results, and optionally refreshing every 15 seconds while that screen is active.
+- Viewing request information, items, and location; accepting a delivery after confirmation.
+- Viewing your requests and deleting an open request after confirmation.
+- Viewing accepted deliveries and available courier/requester details and receipt images.
 
-> **Login/signup screen**
-  - User signup page to obtain access to application
-  - User Email and password to login.
+Request creation, receipt upload, and completion aren't available in the iOS app. Requests and deliveries are stored on the server, not in a local Core Data cache.
 
-![Alt text](/Document/Login.PNG)
+## Build and run
 
-> **Search Map & Collection view**
-  - users have option to use map to search for local requests, collection view will show summary for each request (Place name, deliver time, deliver fee, category and user profile)
-  - Auto refresh option allow auto update every 15 sec and using 
-  - search API using method `"/search"` and parameters: `north east, south west and center points`
+- **Xcode 27.2 / Swift 6.4.2**, building against **iOS 27.2**. iOS and iPadOS **17 or later** are supported.
+- Open `DelivMyApp.xcodeproj`, choose the shared **DelivMyApp** scheme and an iPhone simulator, and Run.
+- A physical device requires configuring your signing team. The existing `com.DelivMyApp` bundle identifier is unchanged.
+- The API client is in the local Swift package `DelivMyCore`. No external Swift dependencies are required.
+- The Release app accepts only HTTPS. Its default API URL is `https://delivmy.com/`, which must serve the matching upgraded [DelivMy-Rails](https://github.com/moh1221/DelivMy-Rails) API. Set the `DELIVMY_API_BASE_URL` Xcode build setting to override that URL for an HTTPS staging or production build. The default hostname was preserved, not deployed or verified as live.
+- For a **Debug** simulator build, add the `DELIVMY_API_BASE_URL` environment variable in **Edit Scheme → Run → Arguments**. Use `http://localhost:3000` for a development Rails server bound to loopback on the Mac. Debug HTTP is limited in code to loopback addresses; the Release bundle has no ATS exceptions.
+- When adapting the existing site, use the exact HTTPS API origin: the client rejects HTTP redirects and authenticates with a bearer token issued by the upgraded Rails login endpoint. The token stays in memory, so relaunching the app requires signing in again. Same-origin app media is loaded without attaching that token.
 
-![Alt text](/Document/Search.PNG)
+## Verification
 
-> **Select request for delivery**
-  - select one of avaiable requests
-  - view will popup and show the request details, click accept deliver, request will move to your deliver list.
-  - Accept request use method `“/deliver/new”` and parameter: `request_id`
-  
-![Alt text](/Document/Search_request.PNG)
+Run `swift test` on a current Swift toolchain. Tests validate the JSON request and response formats, authorization header and endpoint contracts, error handling, and strict URL policy without accessing a live service. GitHub Actions additionally builds the Xcode project and launches it in an iPhone simulator.
 
-**Accept Delivery [Accept Deliv Button]**
-  - Alert message will popup for confirm the request.
-  
-  ![Alt text](/Document/AcceptDeliv.png)
+To test against the real upgraded backend, start the Rails branch locally, supply a disposable development account, and run:
 
-  - Once user confirm - Success information message will apper with request # and deliver time.
-  - To view/follow up with deliver request, go to MyDeliv Tab
-  
-  ![Alt text](/Document/AcceptConfirmation.png)
-
-  - New request will apper on MyDeliv list.
-  
-  ![Alt text](/Document/MyDelivList.png)
-
-> **My Request list**
-  - My request tab show all requests you placed.
-  - Table view show summary info for requests (Place name, deliver time, deliver fee, category and deliver status)
-  - Location: show request location
-  - Item list: show items count, select to view items details
-  - Deliv Info: show profile of delivery user, if request on progress.
-  - Receipt: show request receipt if available. 
-  - Accept request `"option not available"`
-  - Request API using method `“/requests/:id”` and :id is selected `request id`
-  
-![Alt text](/Document/Requests.PNG)
-
-Delete Request
- - Users allowed to delete requests with **Open** status only.
- 
- ![Alt text](/Document/DeleteRequest.png)
-
-
-Request status are:
-```
-  - open: request open for delivery
-  - On Progress: request was accepted by other user and on the way.
-  - Completed: request delivered.
-  - Closed: request closed or canceled
-  - Rejected: User rejected request.
+```sh
+export DELIVMY_TEST_BASE_URL=http://localhost:3000
+export DELIVMY_TEST_EMAIL='your-local-test-account@example.test'
+read -rs DELIVMY_TEST_PASSWORD
+export DELIVMY_TEST_PASSWORD
+swift test --filter localRailsContract
+unset DELIVMY_TEST_PASSWORD
 ```
 
-> **My deliver list**
-  - My deli tab show all deliver accepted by user.
-  - table view show summary info for requests (Place name, deliver time, deliver fee, category and requester info)
-  - Location: show request location
-  - Item list: show items count, select to view items details
-  - Requester Info: show profile of requester user.
-  - Receipt: Allow user to post receipt “Not available on App”. 
-  - User Can't **Delete** Delivery Request.
-  - submit deliver “Not Available"
-  - deliver API using method `“/delivers/:id”` and :id is selected `deliver_id`
-  
-![Alt text](/Document/Delivers.PNG)
+The optional integration test is skipped unless all three values are provided. It refuses non-loopback hosts. It signs in, reads your requests and deliveries, searches nearby, reads sample details when present, signs out, and checks that the old token is invalid.
+
+For an end-to-end simulator check, sign in with two disposable accounts in a seeded development environment. As a courier, search near a seeded open request, inspect it, accept it, and verify it moves to **My Deliveries**. As the requester, verify the accepted request is no longer deletable, and verify deletion of a separate open request. Test denied location permission, pull-to-refresh, and signing out.
+
+## Historical screenshots
+
+The screenshots below are from the earlier UIKit version and document the intended workflows. The current SwiftUI interface looks different.
+
+### Nearby requests
+
+![Nearby search in the original app](Document/Search.PNG)
+
+### Accept a delivery
+
+![Request details in the original app](Document/Search_request.PNG)
+![Acceptance confirmation in the original app](Document/AcceptDeliv.png)
+
+### My requests
+
+![Request list in the original app](Document/Requests.PNG)
+![Delete confirmation in the original app](Document/DeleteRequest.png)
+
+### My deliveries
+
+![Delivery list in the original app](Document/Delivers.PNG)
