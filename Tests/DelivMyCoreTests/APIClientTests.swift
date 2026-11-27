@@ -17,7 +17,7 @@ struct APIClientTests {
             #expect(request.value(forHTTPHeaderField: "Accept") == "application/json")
             #expect(request.value(forHTTPHeaderField: "Content-Type") == "application/json")
             #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
-            let data = try #require(request.httpBody)
+            let data = try requestBody(in: request)
             let body = try #require(JSONSerialization.jsonObject(with: data) as? [String: [String: String]])
             #expect(body == ["session": ["email": "example@invalid.test", "password": "test-password"]])
             return StubReply(200, #"{"session":{"id":"new-token","user_id":42}}"#)
@@ -79,7 +79,7 @@ struct APIClientTests {
             case ("GET", "/requests/13/locations"):
                 return StubReply(200, "null")
             case ("POST", "/delivers/new"):
-                let bodyData = try #require(request.httpBody)
+                let bodyData = try requestBody(in: request)
                 let json = try #require(JSONSerialization.jsonObject(with: bodyData) as? [String: Int])
                 #expect(json == ["request_id": 13])
                 return StubReply(200, #"{"message":"Success"}"#)
@@ -125,6 +125,14 @@ struct APIClientTests {
         await #expect(throws: APIError.invalidData) { try await client.accept(requestID: 20, session: session) }
     }
 
+    @Test func requestBodyCanReadAnInputStreamInMultipleChunks() throws {
+        let expected = Data((0..<10_000).map { UInt8(truncatingIfNeeded: $0) })
+        var request = URLRequest(url: server)
+        request.httpBodyStream = InputStream(data: expected)
+        #expect(request.httpBody == nil)
+        #expect(try requestBody(in: request) == expected)
+    }
+
     @Test func serverURLPolicyAndMediaAreOriginScoped() throws {
         #expect(throws: APIError.invalidServerURL) {
             try APIClient(baseURL: URL(string: "http://not-local.example")!, allowInsecureLoopback: true)
@@ -147,6 +155,24 @@ struct APIClientTests {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [StubProtocol.self]
         return try APIClient(baseURL: server, transport: URLSession(configuration: config))
+    }
+}
+
+// Foundation on Darwin can provide a stream even when the client set httpBody.
+private func requestBody(in request: URLRequest) throws -> Data {
+    if let body = request.httpBody { return body }
+    let stream = try #require(request.httpBodyStream)
+    stream.open()
+    defer { stream.close() }
+
+    var collected = Data()
+    let chunkSize = 4_096
+    var buffer = [UInt8](repeating: 0, count: chunkSize)
+    while true {
+        let count = stream.read(&buffer, maxLength: chunkSize)
+        guard count >= 0 else { throw stream.streamError ?? APIError.invalidRequest }
+        if count == 0 { return collected }
+        collected.append(contentsOf: buffer.prefix(count))
     }
 }
 
